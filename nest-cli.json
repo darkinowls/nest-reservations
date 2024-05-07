@@ -1,11 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "src",
-  "compilerOptions": {
-    "deleteOutDir": true,
-    "webpack": true
-  },
   "projects": {
     "common": {
       "type": "library",
@@ -15,6 +10,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/common/tsconfig.lib.json"
       }
+    },
+    "reservations": {
+      "type": "application",
+      "root": "apps/reservations/src/",
+      "sourceRoot": "apps/reservations/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/reservations/tsconfig.app.json"
+      }
     }
-  }
+  },
+  "sourceRoot": "apps/reservations/src"
 }
