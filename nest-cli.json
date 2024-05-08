@@ -1,6 +1,11 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
+  "compilerOptions": {
+    "plugins": [
+      "@nestjs/swagger"
+    ]
+  },
   "projects": {
     "common": {
       "type": "library",

@@ -6,6 +6,8 @@ export class ReservationDocument extends AbstractDocument {
   @Prop()
   createdAt: Date;
   @Prop()
+  updatedAt: Date;
+  @Prop()
   startDate: Date;
   @Prop()
   endDate: Date;
