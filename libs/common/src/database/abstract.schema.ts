@@ -1,4 +1,4 @@
-import { Prop, Schema } from "@nestjs/mongoose";
+import { ModelDefinition, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Types, SchemaTypes } from "mongoose";
 
 
@@ -9,4 +9,15 @@ export abstract class AbstractDocument {
   })
   _id: Types.ObjectId;
 
+  @Prop()
+  createdAt: Date;
+
+  @Prop()
+  updatedAt: Date;
+
+  static get definition(): ModelDefinition {
+    throw new Error("Definition not implemented.");
+  }
+
 }
+

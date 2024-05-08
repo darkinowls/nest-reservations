@@ -9,9 +9,11 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
   constructor(protected readonly model: Model<TDocument>) {
   }
 
-  async create(document: Omit<TDocument, "_id" | "joke">): Promise<TDocument> {
+  async create(document: Omit<TDocument, "_id" | "createdAt" | "updatedAt">): Promise<TDocument> {
     const createdDocument = new this.model({
       ...document,
+      createdAt: new Date(),
+      updatedAt: new Date(),
       _id: new Types.ObjectId()
     });
     const createdDocumentJSON = await createdDocument.save();
@@ -33,7 +35,10 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
 
   async findOneAndUpdate(filter: FilterQuery<TDocument>, update: UpdateQuery<TDocument>): Promise<TDocument> {
     const doc = await this.model
-      .findOneAndUpdate(filter, update, { new: true })
+      .findOneAndUpdate(filter, {
+        ...update,
+        updatedAt: new Date()
+      }, { new: true })
       .lean<TDocument>(true);
 
     if (!doc) {

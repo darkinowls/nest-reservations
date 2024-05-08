@@ -17,5 +17,15 @@ services:
     ports:
       - "3000:3000"
     command: node /app/dist/index.js
+
+#  auth:
+#    environment:
+#      - MONGO_URI=mongodb://mongo:27017/sleepr
+#    build:
+#      dockerfile: apps/auth/Dockerfile
+#    ports:
+#      - "3001:3001"
+#    command: node /app/dist/index.js
+
 volumes:
   mongo_data:

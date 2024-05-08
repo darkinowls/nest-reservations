@@ -14,8 +14,6 @@ export class ReservationsService {
   create(createReservationDto: CreateReservationDto) {
     return this.reservationsRepository.create({
       ...createReservationDto,
-      createdAt: new Date(),
-      updatedAt: new Date(),
       userId: "1"
     });
   }
@@ -33,10 +31,7 @@ export class ReservationsService {
   update(id: string, updateReservationDto: UpdateReservationDto) {
     return this.reservationsRepository.findOneAndUpdate(
       { _id: id },
-      {
-        ...updateReservationDto,
-        updatedAt: new Date()
-      }
+      updateReservationDto
     );
   }
 

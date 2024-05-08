@@ -1,4 +1,4 @@
-import { IsDate, IsNotEmpty, IsString, IsUUID } from "class-validator";
+import { IsDate, IsString } from "class-validator";
 
 export class CreateReservationDto {
 

@@ -2,13 +2,10 @@ import { AbstractDocument } from "@app/common/database/abstract.schema";
 import { ModelDefinition, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
 @Schema({
-  versionKey: false,
+  versionKey: false
 })
-export class ReservationDocument extends AbstractDocument {
-  @Prop()
-  createdAt: Date;
-  @Prop()
-  updatedAt: Date;
+export class ReservationDocument extends AbstractDocument  {
+
   @Prop()
   startDate: Date;
   @Prop()
@@ -20,11 +17,14 @@ export class ReservationDocument extends AbstractDocument {
   @Prop()
   invoiceId: string;
 
-  static get definition() :  ModelDefinition {
+
+  static get definition(): ModelDefinition {
     return {
       name: ReservationDocument.name,
       schema: SchemaFactory.createForClass(ReservationDocument)
     };
   }
+
+
 }
 
