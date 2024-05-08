@@ -15,7 +15,7 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
       _id: new Types.ObjectId()
     });
     const createdDocumentJSON = await createdDocument.save();
-    this.logger.debug(`Created document: ${createdDocumentJSON}`);
+    this.logger.debug(`Created document: ${JSON.stringify(createdDocumentJSON)}`);
     return createdDocumentJSON.toJSON() as TDocument;
   }
 
@@ -23,11 +23,11 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
     let doc = await this.model.findOne(filter).lean<TDocument>(true);
 
     if (!doc) {
-      this.logger.warn(`Document not found with filter: ${filter}`);
-      throw new NotFoundException(`Document not found with filter: ${filter}`);
+      this.logger.warn(`Document not found with filter: ${JSON.stringify(filter)}`);
+      throw new NotFoundException(`Document not found with filter: ${JSON.stringify(filter)}`);
     }
 
-    this.logger.debug(`Found document: ${doc}`);
+    this.logger.debug(`Found document: ${JSON.stringify(doc)}`);
     return doc;
   }
 
@@ -37,18 +37,18 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
       .lean<TDocument>(true);
 
     if (!doc) {
-      this.logger.warn(`Document not found with filter: ${filter}`);
-      throw new NotFoundException(`Document not found with filter: ${filter}`);
+      this.logger.warn(`Document not found with filter: ${JSON.stringify(filter)}`);
+      throw new NotFoundException(`Document not found with filter: ${JSON.stringify(filter)}`);
     }
 
-    this.logger.debug(`Updated document: ${doc}`);
+    this.logger.debug(`Updated document: ${JSON.stringify(doc)}`);
     return doc;
   }
 
   async find(filter: FilterQuery<TDocument>): Promise<TDocument[]> {
     const docs = await this.model.find(filter)
       .lean<TDocument[]>(true);
-    this.logger.debug(`Found documents: ${docs}`);
+    this.logger.debug(`Found documents: ${JSON.stringify(docs)}`);
     return docs;
   }
 
@@ -58,11 +58,11 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
       .lean<TDocument>(true);
 
     if (!doc) {
-      this.logger.warn(`Document not found with filter: ${filter}`);
-      throw new NotFoundException(`Document not found with filter: ${filter}`);
+      this.logger.warn(`Document not found with filter: ${JSON.stringify(filter)}`);
+      throw new NotFoundException(`Document not found with filter: ${JSON.stringify(filter)}`);
     }
 
-    this.logger.debug(`Deleted document: ${doc}`);
+    this.logger.debug(`Deleted document: ${JSON.stringify(doc)}`);
     return doc;
   }
 

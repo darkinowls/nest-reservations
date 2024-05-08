@@ -1,0 +1,21 @@
+version: '3.7'
+
+services:
+
+  mongo:
+    image: mongo:7
+    ports:
+      - "27016:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  reservations:
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/sleepr
+    build:
+      dockerfile: apps/reservations/Dockerfile
+    ports:
+      - "3000:3000"
+    command: node /app/dist/index.js
+volumes:
+  mongo_data:
