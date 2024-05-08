@@ -30,4 +30,4 @@ WORKDIR /app
 #
 #RUN pnpm install --prod
 
-COPY --from=build /app/dist /app/dist
+COPY --from=build /app/dist/index.js /app/dist/index.js

@@ -3,9 +3,10 @@ import { ReservationsModule } from "./reservations.module";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { ValidationPipe } from "@nestjs/common";
 import { Logger } from "nestjs-pino";
+import { NestExpressApplication } from "@nestjs/platform-express";
 
 async function bootstrap() {
-  const app = await NestFactory.create(ReservationsModule);
+  const app: NestExpressApplication = await NestFactory.create(ReservationsModule);
 
   app.useGlobalPipes(
     new ValidationPipe({

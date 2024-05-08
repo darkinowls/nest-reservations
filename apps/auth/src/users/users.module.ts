@@ -5,12 +5,12 @@ import { AppLoggerModule } from "@app/common/app-logger/app-logger.module";
 import { DatabaseModule } from "@app/common/database/database.module";
 import { UserDocument } from "./entities/user.entity";
 import { UserRepository } from "./user.repository";
+import { ConfigService } from "@nestjs/config";
 
 @Module({
   controllers: [UsersController],
   providers: [UsersService, UserRepository],
   imports: [
-    AppLoggerModule,
     DatabaseModule,
     DatabaseModule.forFeature([
       UserDocument.definition

@@ -28,7 +28,6 @@ ENV NODE_ENV=production
 #COPY package.json .
 #COPY pnpm-lock.yaml .
 #
-#RUN npm install -g pnpm
 #
 #RUN pnpm install --prod
 

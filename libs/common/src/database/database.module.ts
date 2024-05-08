@@ -2,7 +2,6 @@ import { Module } from "@nestjs/common";
 import { ModelDefinition, MongooseModule } from "@nestjs/mongoose";
 import { AppConfigModule } from "@app/common/app-config/app-config.module";
 import { ConfigService } from "@nestjs/config";
-import { Model } from "mongoose";
 
 @Module({
   imports: [MongooseModule.forRootAsync({
