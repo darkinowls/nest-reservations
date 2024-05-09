@@ -24,7 +24,8 @@ services:
     build:
       dockerfile: apps/auth/Dockerfile
     ports:
-      - "3001:3001"
+      - "3011:3011"
+      - "3010:3010"
     command: node /app/dist/index.js
 
 volumes:

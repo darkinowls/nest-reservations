@@ -1,12 +1,14 @@
-import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { GetUser } from './decorators/get-user.decorator';
 import { UserDocument } from './users/entities/user.entity';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { CreateUserDto } from './users/dto/create-user.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { MessagePattern, Payload } from '@nestjs/microservices';
+import { AUTH_MESSAGE } from '@app/common/consts';
 
 
 @Controller('auth')
@@ -29,6 +31,16 @@ export class AuthController {
 	@Get('me')
 	@UseGuards(JwtAuthGuard)
 	async me(@GetUser() user: UserDocument) {
+		return user;
+	}
+
+
+	@MessagePattern(AUTH_MESSAGE)
+	@UseGuards(JwtAuthGuard)
+	async auth(
+		@Payload() data,
+	) {
+		const user: UserDocument = data.user
 		return user;
 	}
 
