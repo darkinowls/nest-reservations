@@ -15,7 +15,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 		super({
 			jwtFromRequest: ExtractJwt.fromExtractors([
 				(request) => {
-					return request?.cookies?.token || request?.token ;
+					console.log(request);
+					console.log('request.cookies.token');
+					return  request?.cookies?.token || request?.token;
 				}
 			]),
 			ignoreExpiration: false,
@@ -23,7 +25,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 		});
 	}
 
+
 	async validate(payload: JwtPayloadDto) {
+		console.log(payload);
+		console.log('payload');
 		return this.userService.findOne(payload.id);
 	}
 }

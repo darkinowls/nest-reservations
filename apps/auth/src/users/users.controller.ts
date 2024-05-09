@@ -1,12 +1,8 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Res } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { LocalAuthGuard } from '../guards/local-auth.guard';
-import { GetUser } from '../decorators/get-user.decorator';
-import { UserDocument } from './entities/user.entity';
-import { Response } from 'express';
+
 
 @Controller('users')
 @ApiTags('users')

@@ -4,35 +4,43 @@ import { CreateReservationDto } from './dto/create-reservation.dto';
 import { UpdateReservationDto } from './dto/update-reservation.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@app/common/auth/jwt-auth.guard';
+import { UserDocument } from '../../auth/src/users/entities/user.entity';
+import { GetUser } from '@app/common/decorators/get-user.decorator';
+import { UserDto } from '@app/common/dto/user.dto';
 
 @Controller('reservations')
 @ApiTags('reservations')
 export class ReservationsController {
-	constructor(private readonly reservationsService: ReservationsService) {}
-
-  @Post()
-  @UseGuards(JwtAuthGuard)
-	create(@Body() createReservationDto: CreateReservationDto) {
-		return this.reservationsService.create(createReservationDto);
+	constructor(private readonly reservationsService: ReservationsService) {
 	}
 
-  @Get()
-  findAll() {
-  	return this.reservationsService.findAll();
-  }
+	@Post()
+	@UseGuards(JwtAuthGuard)
+	create(
+		@Body() createReservationDto: CreateReservationDto,
+		@GetUser() user: UserDto
+	) {
+		console.log(user);
+		return this.reservationsService.create(createReservationDto, user._id);
+	}
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-  	return this.reservationsService.findOne(id);
-  }
+	@Get()
+	findAll() {
+		return this.reservationsService.findAll();
+	}
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateReservationDto: UpdateReservationDto) {
-  	return this.reservationsService.update(id, updateReservationDto);
-  }
+	@Get(':id')
+	findOne(@Param('id') id: string) {
+		return this.reservationsService.findOne(id);
+	}
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-  	return this.reservationsService.remove(id);
-  }
+	@Patch(':id')
+	update(@Param('id') id: string, @Body() updateReservationDto: UpdateReservationDto) {
+		return this.reservationsService.update(id, updateReservationDto);
+	}
+
+	@Delete(':id')
+	remove(@Param('id') id: string) {
+		return this.reservationsService.remove(id);
+	}
 }

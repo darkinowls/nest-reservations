@@ -1,6 +1,5 @@
 import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { GetUser } from './decorators/get-user.decorator';
 import { UserDocument } from './users/entities/user.entity';
 import { Response } from 'express';
 import { CreateUserDto } from './users/dto/create-user.dto';
@@ -9,6 +8,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { AUTH_MESSAGE } from '@app/common/consts';
+import { GetUser } from '@app/common/decorators/get-user.decorator';
 
 
 @Controller('auth')
@@ -22,8 +22,8 @@ export class AuthController {
 	async login(
 		@GetUser() user: UserDocument,
 		@Res({ passthrough: true }) response: Response,
-		@Body() createUserDto: CreateUserDto) {
-		const resUser = await this.authService.login(user, response);
+		@Body() _: CreateUserDto) {
+		await this.authService.login(user, response);
 		response.send(user);
 	}
 
@@ -40,6 +40,7 @@ export class AuthController {
 	async auth(
 		@Payload() data,
 	) {
+		console.log(data);
 		const user: UserDocument = data.user
 		return user;
 	}
