@@ -9,13 +9,13 @@ import { ConfigService } from "@nestjs/config";
 import { AppConfigModule } from "@app/common/app-config/app-config.module";
 import { LocalStrategy } from "./strategies/local.strategy";
 import { PassportModule } from "@nestjs/passport";
+import { JwtStrategy } from "./strategies/jwt.strategy";
 
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, JwtService, LocalStrategy],
+  providers: [AuthService, JwtService, LocalStrategy, JwtStrategy],
   imports: [
-    // PassportModule,
     UsersModule,
     AppLoggerModule,
     AppConfigModule,

@@ -3,6 +3,7 @@ import { UserDocument } from "./users/entities/user.entity";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { Response } from "express";
+import { JwtPayloadDto } from "./dtos/jwt-payload.dto";
 
 @Injectable()
 export class AuthService {
@@ -15,10 +16,10 @@ export class AuthService {
   }
 
   async login(user: UserDocument, response: Response) {
-    const payload =
+    const payload: JwtPayloadDto =
       {
+        id: user._id.toHexString(),
         email: user.email,
-        sub: user._id.toHexString()
       };
     const expiresIn = new Date();
 
