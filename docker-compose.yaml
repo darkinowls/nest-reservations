@@ -29,5 +29,15 @@ services:
       - "3010:3010"
     command: node /app/dist/index.js
 
+  payments:
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/sleepr
+    build:
+      dockerfile: apps/payments/Dockerfile
+    ports:
+      - "3020:3020"
+    command: node /app/dist/index.js
+
+
 volumes:
   mongo_data:

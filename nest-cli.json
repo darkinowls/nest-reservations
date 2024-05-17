@@ -32,7 +32,24 @@
       "compilerOptions": {
         "tsConfigPath": "apps/auth/tsconfig.app.json"
       }
+    },
+    "sleepr": {
+      "type": "application",
+      "root": "apps/sleepr",
+      "entryFile": "main",
+      "sourceRoot": "apps/sleepr/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/sleepr/tsconfig.app.json"
+      }
+    },
+    "payments": {
+      "type": "application",
+      "root": "apps/payments",
+      "entryFile": "main",
+      "sourceRoot": "apps/payments/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/payments/tsconfig.app.json"
+      }
     }
-  },
-  "sourceRoot": "apps/reservations/src"
+  }
 }

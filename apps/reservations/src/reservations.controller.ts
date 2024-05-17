@@ -4,7 +4,6 @@ import { CreateReservationDto } from './dto/create-reservation.dto';
 import { UpdateReservationDto } from './dto/update-reservation.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@app/common/auth/jwt-auth.guard';
-import { UserDocument } from '../../auth/src/users/entities/user.entity';
 import { GetUser } from '@app/common/decorators/get-user.decorator';
 import { UserDto } from '@app/common/dto/user.dto';
 

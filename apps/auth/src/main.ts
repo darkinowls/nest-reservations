@@ -5,16 +5,16 @@ import { Logger } from 'nestjs-pino';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 import { Transport } from '@nestjs/microservices';
-import * as process from 'process';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
 	const app = await NestFactory.create(AuthModule);
-
+	const configService = app.get(ConfigService);
 	app.connectMicroservice({
 		transport: Transport.TCP,
 		options: {
 			host: '0.0.0.0',
-			port: process.env.AUTH_TCP_PORT || -1
+			port: configService.getOrThrow('AUTH_TCP_PORT')
 		}
 	});
 
@@ -44,7 +44,7 @@ async function bootstrap() {
 	SwaggerModule.setup('api', app, document);
 
 	await app.startAllMicroservices();
-	await app.listen(process.env.AUTH_HTTP_PORT || -1);
+	await app.listen( configService.getOrThrow('AUTH_HTTP_PORT'));
 }
 
 bootstrap();

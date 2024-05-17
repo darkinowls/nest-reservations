@@ -6,7 +6,7 @@ import { ReservationsRepository } from './reservations.repository';
 import { ReservationDocument } from './entities/reservation.entity';
 import { AppLoggerModule } from '@app/common/app-logger/app-logger.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { AUTH_SERVICE } from '@app/common/consts';
+import { AUTH_SERVICE, PAYMENT_SERVICE } from '@app/common/consts';
 import { ConfigService } from '@nestjs/config';
 
 @Module({
@@ -17,20 +17,28 @@ import { ConfigService } from '@nestjs/config';
 			ReservationDocument.definition
 		]),
 		ClientsModule.registerAsync([
-
 			{
 				name: AUTH_SERVICE,
 				useFactory: (cs: ConfigService) => ({
 					transport: Transport.TCP,
 					options: {
 						host: cs.getOrThrow('AUTH_HOST'),
-						port: cs.getOrThrow('AUTH_TCP_PORT'),
-					},
+						port: cs.getOrThrow('AUTH_TCP_PORT')
+					}
 				}),
-				inject: [ConfigService],
+				inject: [ConfigService]
+			},
+			{
+				name: PAYMENT_SERVICE,
+				useFactory: (cs: ConfigService) => ({
+					transport: Transport.TCP,
+					options: {
+						host: cs.getOrThrow('PAYMENT_HOST'),
+						port: cs.getOrThrow('PAYMENT_TCP_PORT')
+					}
+				}),
+				inject: [ConfigService]
 			}
-
-
 		])
 
 	],
