@@ -2,13 +2,13 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { UpdateReservationDto } from './dto/update-reservation.dto';
 import { ReservationsRepository } from './reservations.repository';
-import { PAYMENT_SERVICE } from '@app/common/consts';
+import { CREATE_CHARGE_MESSAGE, PAYMENT_SERVICE } from '@app/common/consts';
 import { ClientProxy } from '@nestjs/microservices';
 import { PurchaseUnitRequest } from '@paypal/checkout-server-sdk/lib/orders/lib';
+import { map } from 'rxjs';
 
 @Injectable()
 export class ReservationsService {
-
 
 
 	constructor(
@@ -18,18 +18,26 @@ export class ReservationsService {
 	}
 
 	async create(createReservationDto: CreateReservationDto, userId: string) {
-		const res = await this.reservationsRepository.create({
+		const resDoc = await this.reservationsRepository.create({
 			...createReservationDto,
 			userId
 		});
-		const paymentInfo: PurchaseUnitRequest= {
+		const paymentInfo: PurchaseUnitRequest = {
 			amount: {
 				value: '100.00',
 				currency_code: 'USD'
 			}
-		} 
-		this.paymentClient.send('createCharge', paymentInfo);
-		return res;
+		};
+		const paymentResult = this.paymentClient.send(CREATE_CHARGE_MESSAGE, paymentInfo);
+		return paymentResult.pipe(
+			map((approvalLink: string) => {
+				console.log(approvalLink);
+				return {
+					...resDoc,
+					approvalLink
+				};
+			})
+		);
 	}
 
 	findAll() {
