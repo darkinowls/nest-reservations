@@ -3,16 +3,19 @@ name: sleepr_prod
 
 services:
 
-
   
   mongo:
     image: mongo:7
     ports:
       - "27016:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: your_password_here
     volumes:
       - mongo_data_prod:/data/db
 
   reservations:
+    restart: always
     env_file:
       - .env.prod
     build:
@@ -23,33 +26,29 @@ services:
 
 
   auth:
+    restart: always
     env_file:
       - .env.prod
     build:
       dockerfile: apps/auth/prod.Dockerfile
     ports:
-      - "3011:3011"
       - "3010:3010"
     command: node /app/dist/index.js
 
   payments:
+    restart: always
     env_file:
       - .env.prod
     build:
       dockerfile: apps/payments/prod.Dockerfile
-    ports:
-      - "3020:3020"
-      - "3021:3021"
     command: node /app/dist/index.js
 
   notifications:
+    restart: always
     env_file:
       - .env.prod
     build:
       dockerfile: apps/notifications/prod.Dockerfile
-    ports:
-      - "3031:3031"
-      - "3030:3030"
     command: node /app/dist/index.js
 
 
