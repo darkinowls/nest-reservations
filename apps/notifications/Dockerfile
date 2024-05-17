@@ -14,18 +14,21 @@ RUN npm install -g pnpm
 
 RUN pnpm install
 
-RUN pnpm run build
+RUN npm install @vercel/ncc -g
+#RUN pnpm run build
+RUN ncc build apps/notifications/src/main.ts -o dist
 
 
 FROM node:20.12.1-alpine3.19 as production
 
 WORKDIR /app
 
-COPY package.json .
-COPY pnpm-lock.yaml .
+ENV NODE_ENV=production
 
-RUN npm install -g pnpm
+#COPY package.json .
+#COPY pnpm-lock.yaml .
+#
+#
+#RUN pnpm install --prod
 
 COPY --from=build /app/dist /app/dist
-
-RUN pnpm install --prod

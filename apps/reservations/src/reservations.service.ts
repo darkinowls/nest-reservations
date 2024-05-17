@@ -4,8 +4,10 @@ import { UpdateReservationDto } from './dto/update-reservation.dto';
 import { ReservationsRepository } from './reservations.repository';
 import { CREATE_CHARGE_MESSAGE, PAYMENT_SERVICE } from '@app/common/consts';
 import { ClientProxy } from '@nestjs/microservices';
-import { PurchaseUnitRequest } from '@paypal/checkout-server-sdk/lib/orders/lib';
-import { catchError, map, of, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs';
+
+import { UserDto } from '@app/common/dto/user.dto';
+import { MakePaymentDto } from '@app/common/dto/makePayment.dto';
 
 @Injectable()
 export class ReservationsService {
@@ -17,23 +19,26 @@ export class ReservationsService {
 	) {
 	}
 
-	async create(createReservationDto: CreateReservationDto, userId: string) {
-		const paymentInfo: PurchaseUnitRequest = {
-			amount: {
-				value: '100.00',
-				currency_code: 'USD'
+	async create(createReservationDto: CreateReservationDto, user: UserDto) {
+		const paymentInfo: MakePaymentDto = {
+			email: user.email,
+			purchaseUnitRequest: {
+				amount: {
+					value: '100.00',
+					currency_code: 'USD'
+				}
 			}
 		};
 		// TODO: USE WEBHOOKS
 		// TODO: add HTTPS
 		return this.paymentClient
-			.send(CREATE_CHARGE_MESSAGE, {})
+			.send(CREATE_CHARGE_MESSAGE, paymentInfo)
 			.pipe(
 				map(
 					async (value: string) => {
 						const resDoc = await this.reservationsRepository.create({
 							...createReservationDto,
-							userId
+							userId: user._id
 						});
 						return {
 							...resDoc,

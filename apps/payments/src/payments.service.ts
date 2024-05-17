@@ -1,8 +1,11 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as paypal from '@paypal/checkout-server-sdk';
-import { PurchaseUnitRequest } from '@paypal/checkout-server-sdk/lib/orders/lib';
 import { ResultPaymentDto } from './dto/resultPayment.dto';
+import { NOTIFICATION_SERVICE, NOTIFY_USER } from '@app/common/consts';
+import { ClientProxy } from '@nestjs/microservices';
+import { MakePaymentDto } from '@app/common/dto/makePayment.dto';
+import { NotifyUserDto } from '@app/common/dto/notifyUser.dto';
 
 
 @Injectable()
@@ -13,7 +16,10 @@ export class PaymentsService {
 	private readonly payClient: paypal.core.PayPalHttpClient;
 
 
-	constructor(readonly configService: ConfigService) {
+	constructor(
+		private readonly configService: ConfigService,
+		@Inject(NOTIFICATION_SERVICE) private readonly notificationClient: ClientProxy
+	) {
 		const clientId = this.configService.getOrThrow('PAYMENT_CLIENT_ID');
 		const clientSecret = this.configService.getOrThrow('PAYMENT_CLIENT_SECRET');
 		//
@@ -22,20 +28,31 @@ export class PaymentsService {
 		this.payClient = new paypal.core.PayPalHttpClient(environment);
 	}
 
-	async createCharge(ccd: PurchaseUnitRequest): Promise<string> {
-		this.logger.verbose(ccd)
+	async createCharge(makePaymentDto: MakePaymentDto): Promise<string> {
+
+		const { email, purchaseUnitRequest } = makePaymentDto;
+
+		this.logger.debug(makePaymentDto);
 
 		const r = new paypal.orders.OrdersCreateRequest();
 		r.requestBody({
 			intent: 'CAPTURE',
-			purchase_units: [ccd]
+			purchase_units: [purchaseUnitRequest]
 		});
 
 		const res = (await this.payClient.execute(r)).result as ResultPaymentDto;
 		if (res.status !== 'CREATED') {
 			throw new Error('Order not created');
 		}
-		this.logger.debug(res)
+
+		const notifyUser: NotifyUserDto = {
+			email: email,
+			subject: 'Payment required',
+			message: 'Make the payment, unless reservation will be undone'
+		};
+
+		this.notificationClient.emit(NOTIFY_USER, notifyUser);
+		this.logger.debug(res);
 		return this.getApprovalLink(res);
 	}
 

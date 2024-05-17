@@ -1,19 +1,18 @@
-import { Logger } from 'nestjs-pino';
 import { NestFactory } from '@nestjs/core';
-import { PaymentsModule } from './payments.module';
-import { Transport } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
+import { Transport } from '@nestjs/microservices';
 import { ValidationPipe } from '@nestjs/common';
-
+import { Logger } from 'nestjs-pino';
+import { NotificationsModule } from './notifications.module';
 
 async function bootstrap() {
-	const app = await NestFactory.create(PaymentsModule);
+	const app = await NestFactory.create(NotificationsModule);
 	const configService = app.get(ConfigService);
 	app.connectMicroservice({
 		transport: Transport.TCP,
 		options: {
-			host: configService.getOrThrow('PAYMENT_HOST'),
-			port: configService.getOrThrow('PAYMENT_TCP_PORT')
+			host: configService.getOrThrow('NOTIFICATION_HOST'),
+			port: configService.getOrThrow('NOTIFICATION_TCP_PORT')
 		}
 	});
 	app.useGlobalPipes(
@@ -30,7 +29,7 @@ async function bootstrap() {
 		app.get(Logger)
 	);
 	await app.startAllMicroservices();
-	await app.listen(configService.getOrThrow('PAYMENT_HTTP_PORT'));
+	await app.listen(configService.getOrThrow('NOTIFICATION_HTTP_PORT'));
 }
 
 bootstrap();

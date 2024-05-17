@@ -1,6 +1,8 @@
 version: '3.7'
 
 services:
+  
+  
 
   mongo:
     image: mongo:7
@@ -10,8 +12,8 @@ services:
       - mongo_data:/data/db
 
   reservations:
-    environment:
-      - MONGO_URI=mongodb://mongo:27017/sleepr
+    env_file:
+      - .env.prod
     build:
       dockerfile: apps/reservations/Dockerfile
     ports:
@@ -20,22 +22,33 @@ services:
 
 
   auth:
-    environment:
-      - MONGO_URI=mongodb://mongo:27017/sleepr
+    env_file:
+      - .env.prod
     build:
       dockerfile: apps/auth/Dockerfile
     ports:
       - "3011:3011"
       - "3010:3010"
-    command: node /app/dist/index.js
+    command: node /app/dist/apps/auth/src/main.js
 
   payments:
-    environment:
-      - MONGO_URI=mongodb://mongo:27017/sleepr
+    env_file:
+      - .env.prod
     build:
       dockerfile: apps/payments/Dockerfile
     ports:
       - "3020:3020"
+      - "3021:3021"
+    command: node /app/dist/index.js
+
+  notifications:
+    env_file:
+      - .env.prod
+    build:
+      dockerfile: apps/notifications/Dockerfile
+    ports:
+      - "3031:3031"
+      - "3030:3030"
     command: node /app/dist/index.js
 
 
