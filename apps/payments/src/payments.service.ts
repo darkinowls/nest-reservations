@@ -23,6 +23,7 @@ export class PaymentsService {
 	}
 
 	async createCharge(ccd: PurchaseUnitRequest): Promise<string> {
+		this.logger.verbose(ccd)
 
 		const r = new paypal.orders.OrdersCreateRequest();
 		r.requestBody({
@@ -34,7 +35,7 @@ export class PaymentsService {
 		if (res.status !== 'CREATED') {
 			throw new Error('Order not created');
 		}
-		console.log(res);
+		this.logger.debug(res)
 		return this.getApprovalLink(res);
 	}
 
