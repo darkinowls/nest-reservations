@@ -2,13 +2,15 @@ FROM node:20.12.1-alpine3.19 as build
 
 WORKDIR /app
 
-COPY . .
+COPY apps/notifications apps/notifications
+COPY libs libs
 
 #RUN rm -rf node_modules
 #RUN rm -rf dist
 
 COPY package.json .
 COPY pnpm-lock.yaml .
+COPY tsconfig.json .
 
 RUN npm install -g pnpm
 
