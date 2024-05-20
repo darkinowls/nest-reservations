@@ -1,0 +1,37 @@
+steps:
+
+#    reservations
+  - name: 'gcr.io/cloud-builders/docker'
+    script: |
+      docker build -t us-west2-docker.pkg.dev/sleepr-423612/reservations/prod -f /apps/reservations/debug.Dockerfile .
+
+  - name: 'gcr.io/cloud-builders/docker'
+    script: |
+      docker push us-west2-docker.pkg.dev/sleepr-423612/reservations/prod
+
+#   auth
+  - name: 'gcr.io/cloud-builders/docker'
+    script: |
+      docker build -t us-west2-docker.pkg.dev/sleepr-423612/auth/prod -f /apps/auth/debug.Dockerfile .
+
+  - name: 'gcr.io/cloud-builders/docker'
+    script: |
+      docker push us-west2-docker.pkg.dev/sleepr-423612/auth/prod
+
+#  notifications
+  - name: 'gcr.io/cloud-builders/docker'
+    script: |
+      docker build -t us-west2-docker.pkg.dev/sleepr-423612/notifications/prod -f /apps/notifications/debug.Dockerfile .
+
+  - name: 'gcr.io/cloud-builders/docker'
+    script: |
+      docker push us-west2-docker.pkg.dev/sleepr-423612/notifications/prod
+
+# payments
+  - name: 'gcr.io/cloud-builders/docker'
+    script: |
+      docker build -t us-west2-docker.pkg.dev/sleepr-423612/payments/prod -f /apps/payments/debug.Dockerfile .
+
+  - name: 'gcr.io/cloud-builders/docker'
+    script: |
+      docker push us-west2-docker.pkg.dev/sleepr-423612/payments/prod
