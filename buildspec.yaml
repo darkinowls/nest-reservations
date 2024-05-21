@@ -1,0 +1,13 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+#      - remove echo
+      - echo "aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 123456789012.dkr.ecr.us-west-2.amazonaws.com"
+  build:
+    commands:
+      - docker build -t 123456789012.dkr.ecr.us-west-2.amazonaws.com/sleepr -f cloud.Dockerfile .
+  post_build:
+    commands:
+      - docker push 123456789012.dkr.ecr.us-west-2.amazonaws.com/sleepr:latest
