@@ -12,7 +12,7 @@ async function bootstrap() {
 	app.connectMicroservice({
 		transport: Transport.TCP,
 		options: {
-			host: configService.getOrThrow('PAYMENT_HOST'),
+			host: '0.0.0.0',
 			port: configService.getOrThrow('PAYMENT_TCP_PORT')
 		}
 	});

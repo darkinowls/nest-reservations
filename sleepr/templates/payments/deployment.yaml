@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payments
+  labels:
+    app: payments
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payments
+  template:
+    metadata:
+      name: payments
+      labels:
+        app: payments
+    spec:
+      containers:
+        - name: payments
+          image: europe-west10-docker.pkg.dev/sleepr-423612/sleepr/app:latest
+          imagePullPolicy: Never
+          command: [ "node", "/app/dist/apps/payments/src/main" ]
+          ports:
+            - containerPort: 3021
+          envFrom:
+            - configMapRef:
+                name: mongo-env-config

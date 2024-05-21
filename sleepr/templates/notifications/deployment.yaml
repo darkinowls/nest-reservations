@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notifications
+  labels:
+    app: notifications
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notifications
+  template:
+    metadata:
+      name: notifications
+      labels:
+        app: notifications
+    spec:
+      containers:
+        - name: notifications
+          image: europe-west10-docker.pkg.dev/sleepr-423612/sleepr/app:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3031
+          command: [ "node", "/app/dist/apps/notifications/src/main" ]
+          envFrom:
+            - configMapRef:
+                name: mongo-env-config

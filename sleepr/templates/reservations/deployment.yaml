@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reservations
+  labels:
+    app: reservations
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reservations
+  template:
+    metadata:
+      name: reservations
+      labels:
+        app: reservations
+    spec:
+      containers:
+        - name: reservations
+          image: europe-west10-docker.pkg.dev/sleepr-423612/sleepr/app:latest
+          imagePullPolicy: Never
+          command: ["node", "/app/dist/apps/reservations/src/main"]
+          envFrom:
+            - configMapRef:
+                name: mongo-env-config
+          ports:
+            - containerPort: 3000
+              hostPort: 3000
