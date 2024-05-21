@@ -26,4 +26,3 @@ spec:
                 name: mongo-env-config
           ports:
             - containerPort: 3000
-              hostPort: 3000

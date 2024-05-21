@@ -6,8 +6,25 @@ spec:
   selector:
     app: auth
   ports:
-    - protocol: TCP
+    - name: "auth-tcp"
+      protocol: TCP
       port: 3011
       targetPort: 3011
-  type: ClusterIP
-  
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-http
+spec:
+  selector:
+    app: auth
+  ports:
+    - name: "auth-http"
+      protocol: TCP
+      port: 3010
+      targetPort: 3010
+      nodePort: 30010
+  type: NodePort
