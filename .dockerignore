@@ -2,3 +2,7 @@ node_modules
 dist
 docker-compose.yaml
 docker-compose.debug.yaml
+
+/**/node_modules
+/**/dist
+/**/docker-compose.yaml

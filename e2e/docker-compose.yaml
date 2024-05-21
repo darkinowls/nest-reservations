@@ -1,20 +1,16 @@
-version: '3.7'
-
-
 services:
 
   mongo:
     image: mongo:7
     ports:
       - "27016:27017"
-    volumes:
-      - mongo_data:/data/db
 
   reservations:
     env_file:
-      - .env
+      - ../.env
     build:
-      dockerfile: apps/reservations/debug.Dockerfile
+      context: ../
+      dockerfile: cloud.Dockerfile
     ports:
       - "3000:3000"
     command: node /app/dist/apps/reservations/src/main
@@ -22,9 +18,10 @@ services:
 
   auth:
     env_file:
-      - .env
+      - ../.env
     build:
-      dockerfile: apps/auth/debug.Dockerfile
+      context: ../
+      dockerfile: cloud.Dockerfile
     ports:
       - "3011:3011"
       - "3010:3010"
@@ -32,9 +29,10 @@ services:
 
   payments:
     env_file:
-      - .env
+      - ../.env
     build:
-      dockerfile: apps/payments/debug.Dockerfile
+      context: ../
+      dockerfile: cloud.Dockerfile
     ports:
       - "3020:3020"
       - "3021:3021"
@@ -42,14 +40,24 @@ services:
 
   notifications:
     env_file:
-      - .env
+      - ../.env
     build:
-      dockerfile: apps/notifications/debug.Dockerfile
+      context: ../
+      dockerfile: cloud.Dockerfile
     ports:
       - "3031:3031"
       - "3030:3030"
     command: node /app/dist/apps/notifications/src/main.js
 
 
-volumes:
-  mongo_data:
+  tester:
+    build:
+      context: .
+    command: npm run test
+    depends_on:
+      - mongo
+      - reservations
+      - auth
+      - payments
+      - notifications
+
