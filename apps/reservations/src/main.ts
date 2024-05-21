@@ -5,9 +5,6 @@ import { ValidationPipe } from '@nestjs/common';
 import { Logger } from 'nestjs-pino';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as cookieParser from 'cookie-parser';
-// import { join } from 'path';
-// import * as fs from 'fs';
-
 async function bootstrap() {
 	const app: NestExpressApplication = await NestFactory.create(ReservationsModule);
 	app.use(
@@ -33,7 +30,6 @@ async function bootstrap() {
 		.build();
 	const document = SwaggerModule.createDocument(app, config);
 	SwaggerModule.setup('api', app, document);
-	// fs.writeFileSync('./swagger-spec.json', JSON.stringify(document));
 
 	await app.listen(process.env.RESERVATION_PORT || -1);
 }

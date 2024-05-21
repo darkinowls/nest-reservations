@@ -21,5 +21,12 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 27017
+          volumeMounts:
+            - name: mongo-storage
+              mountPath: /data/db # Mount path inside the container
+      volumes:
+        - name: mongo-storage
+          persistentVolumeClaim:
+            claimName: mongo-pvc
 
       restartPolicy: Always

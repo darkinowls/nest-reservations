@@ -21,9 +21,6 @@ spec:
           image: europe-west10-docker.pkg.dev/sleepr-423612/sleepr/app:latest
           imagePullPolicy: Never
           command: [ "node", "/app/dist/apps/auth/src/main" ]
-          ports:
-            - containerPort: 3010
-              hostPort: 3010
           envFrom:
             - configMapRef:
                 name: mongo-env-config
