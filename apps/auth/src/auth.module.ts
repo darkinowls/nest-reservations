@@ -9,6 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import { AppConfigModule } from '@app/common/app-config/app-config.module';
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { HealthModule } from '@app/common/health/health.module';
 
 
 @Module({
@@ -17,14 +18,15 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 	imports: [
 		UsersModule,
 		AppLoggerModule,
+		HealthModule,
 		AppConfigModule,
 		JwtModule.registerAsync({
 			useFactory: (cs: ConfigService) => ({
 				secret: cs.getOrThrow('JWT_SECRET'),
-				signOptions: { expiresIn: cs.getOrThrow('JWT_EXPIRE') },
+				signOptions: { expiresIn: cs.getOrThrow('JWT_EXPIRE') }
 			}),
 			inject: [ConfigService],
-			imports: [AppConfigModule],
+			imports: [AppConfigModule]
 		})
 	]
 })

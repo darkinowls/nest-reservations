@@ -8,11 +8,13 @@ import { AppLoggerModule } from '@app/common/app-logger/app-logger.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AUTH_SERVICE, PAYMENT_SERVICE } from '@app/common/consts';
 import { ConfigService } from '@nestjs/config';
+import { HealthModule } from '@app/common/health/health.module';
 
 @Module({
 	imports: [
 		AppLoggerModule,
 		DatabaseModule,
+		HealthModule,
 		DatabaseModule.forFeature([
 			ReservationDocument.definition
 		]),
