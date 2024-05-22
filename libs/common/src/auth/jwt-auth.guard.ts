@@ -3,6 +3,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { catchError, map, Observable, tap } from 'rxjs';
 import { AUTH_MESSAGE, AUTH_SERVICE } from '@app/common/consts';
 import { Reflector } from '@nestjs/core';
+import { UserEntity } from '@app/common/entities/user.entity';
 
 
 @Injectable()
@@ -28,17 +29,13 @@ export class JwtAuthGuard implements CanActivate {
 		return this.ac.send(AUTH_MESSAGE, {
 			token: jwt
 		}).pipe(
-			tap((res) => {
-				// if (!roles) {
-				// 	context.switchToHttp().getRequest().user = res;
-				// 	return;
-				// }
-				if (!roles){
+			tap((res: UserEntity) => {
+				if (!roles) {
 					context.switchToHttp().getRequest().user = res;
 					return;
 				}
 				for (const role of roles) {
-					if (res.roles.includes(role)) {
+					if (res.roles.map(value => value.name).includes(role)) {
 						context.switchToHttp().getRequest().user = res;
 						return;
 					}

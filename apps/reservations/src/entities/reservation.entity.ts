@@ -1,29 +1,19 @@
-import { AbstractDocument } from "@app/common/database/abstract.schema";
-import { ModelDefinition, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { AbstractEntity } from '@app/common/database/abstract.entity';
+import { Column, Entity } from 'typeorm';
 
-@Schema({
-  versionKey: false
-})
-export class ReservationDocument extends AbstractDocument  {
+@Entity()
+export class ReservationEntity extends AbstractEntity<ReservationEntity> {
 
-  @Prop()
-  startDate: Date;
-  @Prop()
-  endDate: Date;
-  @Prop()
-  userId: string;
-  @Prop()
-  placeId: string;
-  @Prop()
-  invoiceId: string;
-
-
-  static get definition(): ModelDefinition {
-    return {
-      name: ReservationDocument.name,
-      schema: SchemaFactory.createForClass(ReservationDocument)
-    };
-  }
+	@Column()
+		startDate: Date;
+	@Column()
+		endDate: Date;
+	@Column()
+		userId: string;
+	@Column()
+		placeId: string;
+	@Column()
+		invoiceId: string;
 
 
 }

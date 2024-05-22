@@ -5,8 +5,8 @@ import { UpdateReservationDto } from './dto/update-reservation.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@app/common/auth/jwt-auth.guard';
 import { GetUser } from '@app/common/decorators/get-user.decorator';
-import { UserDto } from '@app/common/dto/user.dto';
 import { Roles } from '@app/common/decorators/roles.decorator';
+import { UserEntity } from '@app/common/entities/user.entity';
 
 @Controller('reservations')
 @ApiTags('reservations')
@@ -18,7 +18,7 @@ export class ReservationsController {
 	@UseGuards(JwtAuthGuard)
 	create(
 		@Body() createReservationDto: CreateReservationDto,
-		@GetUser() user: UserDto
+		@GetUser() user: UserEntity
 	) {
 		console.log(user);
 		return this.reservationsService.create(createReservationDto, user);

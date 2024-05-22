@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { UserDocument } from './users/entities/user.entity';
+import { UserEntity } from './users/entities/user.entity';
 import { Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
@@ -20,7 +20,7 @@ export class AuthController {
 	@UseGuards(AuthGuard('local'))
 	@Post('local')
 	async login(
-		@GetUser() user: UserDocument,
+		@GetUser() user: UserEntity,
 		@Res({ passthrough: true }) response: Response,
 		@Body() _: LoginUserDto) {
 		await this.authService.login(user, response);
@@ -30,7 +30,7 @@ export class AuthController {
 
 	@Get('me')
 	@UseGuards(JwtAuthGuard)
-	async me(@GetUser() user: UserDocument) {
+	async me(@GetUser() user: UserEntity) {
 		return user;
 	}
 
@@ -41,7 +41,7 @@ export class AuthController {
 		@Payload() data,
 	) {
 		console.log(data);
-		const user: UserDocument = data.user
+		const user: UserEntity = data.user
 		return user;
 	}
 

@@ -3,7 +3,7 @@ import { ReservationsService } from './reservations.service';
 import { ReservationsController } from './reservations.controller';
 import { DatabaseModule } from '@app/common/database/database.module';
 import { ReservationsRepository } from './reservations.repository';
-import { ReservationDocument } from './entities/reservation.entity';
+import { ReservationEntity } from './entities/reservation.entity';
 import { AppLoggerModule } from '@app/common/app-logger/app-logger.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AUTH_SERVICE, PAYMENT_SERVICE } from '@app/common/consts';
@@ -16,7 +16,7 @@ import { HealthModule } from '@app/common/health/health.module';
 		DatabaseModule,
 		HealthModule,
 		DatabaseModule.forFeature([
-			ReservationDocument.definition
+			ReservationEntity
 		]),
 		ClientsModule.registerAsync([
 			{

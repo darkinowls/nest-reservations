@@ -4,12 +4,12 @@ name: sleepr_local
 
 services:
 
-  mongo:
-    image: mongo:7
+  postgres:
+    image: postgres:16-alpine
     ports:
-      - "27016:27017"
-    volumes:
-      - mongo_data:/data/db
+      - "5431:5432"
+    env_file:
+      - .env.prod
 
   reservations:
     volumes:

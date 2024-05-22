@@ -6,8 +6,9 @@ import { CREATE_CHARGE_MESSAGE, PAYMENT_SERVICE } from '@app/common/consts';
 import { ClientProxy } from '@nestjs/microservices';
 import { catchError, map } from 'rxjs';
 
-import { UserDto } from '@app/common/dto/user.dto';
 import { MakePaymentDto } from '@app/common/dto/makePayment.dto';
+import { ReservationEntity } from './entities/reservation.entity';
+import { UserEntity } from '@app/common/entities/user.entity';
 
 @Injectable()
 export class ReservationsService {
@@ -19,7 +20,7 @@ export class ReservationsService {
 	) {
 	}
 
-	async create(createReservationDto: CreateReservationDto, user: UserDto) {
+	async create(createReservationDto: CreateReservationDto, user: UserEntity) {
 		const paymentInfo: MakePaymentDto = {
 			email: user.email,
 			purchaseUnitRequest: {
@@ -36,10 +37,12 @@ export class ReservationsService {
 			.pipe(
 				map(
 					async (value: string) => {
-						const resDoc = await this.reservationsRepository.create({
+						const res = new ReservationEntity({
 							...createReservationDto,
 							userId: user._id
 						});
+						const resDoc = await this
+							.reservationsRepository.create(res);
 						return {
 							...resDoc,
 							approvalLink: value

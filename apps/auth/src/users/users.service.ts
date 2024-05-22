@@ -3,6 +3,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserRepository } from './user.repository';
 import * as bcrypt from 'bcryptjs';
+import { UserEntity } from '@app/common/entities/user.entity';
+import { RoleEntity } from '@app/common/entities/role.entity';
 
 @Injectable()
 export class UsersService {
@@ -11,15 +13,37 @@ export class UsersService {
 	}
 
 	async create(createUserDto: CreateUserDto) {
+
+		const existingUser = await this.findByEmail(createUserDto.email);
+		if (existingUser) {
+			throw new BadRequestException('User already exists');
+		}
+
+		const user = new UserEntity({
+			...createUserDto,
+			password: await bcrypt.hash(createUserDto.password, 10),
+			roles: createUserDto.roles ? createUserDto.roles.map(
+				(role) => new RoleEntity(role)
+			) : []
+		});
 		try {
-			return await this.userRepository.create({
-				...createUserDto,
-				password: await bcrypt.hash(createUserDto.password, 10)
-			});
+			return await this.userRepository.create(user);
 		} catch (error) {
 			throw new BadRequestException('Can\'t create the user');
 		}
 	}
+
+	async findByEmail(email: string) {
+		try {
+			return await this.userRepository.findOne({
+				email: email
+			});
+		} catch (error) {
+			// no user
+			return null;
+		}
+	}
+
 
 	findAll() {
 		return this.userRepository.find({});
@@ -28,7 +52,7 @@ export class UsersService {
 	findOne(id: string) {
 		return this.userRepository.findOne({
 			_id: id
-		},);
+		});
 	}
 
 	update(id: string, updateUserDto: UpdateUserDto) {
