@@ -4,6 +4,8 @@ services:
     image: mongo:7
     ports:
       - "27016:27017"
+    volumes:
+      - data_test:/data/db
 
   reservations:
     env_file:
@@ -51,6 +53,7 @@ services:
 
 
   tester:
+    network_mode: host
     build:
       context: .
     command: npm run test
@@ -60,4 +63,7 @@ services:
       - auth
       - payments
       - notifications
+
+volumes:
+  data_test:
 

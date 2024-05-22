@@ -18,5 +18,8 @@
       "error",
       "single"
     ]
+  },
+  "env": {
+    "node": true
   }
 }
