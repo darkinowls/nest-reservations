@@ -1,15 +1,7 @@
+import { postFetch } from './tools';
+
 describe('Reservations checks', () => {
 
-	const postFetch = async (url: string, body) => {
-		return await fetch(url, {
-			body: JSON.stringify(body),
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			credentials: 'include'
-		});
-	};
 
 	// Create it if not exists
 	const user = {
@@ -32,11 +24,9 @@ describe('Reservations checks', () => {
 		await postFetch('http://localhost:3010/users', user);
 		const res = await postFetch('http://localhost:3010/auth/local', user);
 		expect(res.status).toBe(201);
-		console.log(res.headers.get('set-cookie'));
 		expect(res.headers.get('set-cookie')).toBeDefined();
 		expect((await res.json()).email).toBe(user.email);
 		cookie = res.headers.get('set-cookie');
-		console.log(cookie);
 	});
 
 	it('should create a reservation', async () => {
@@ -52,7 +42,6 @@ describe('Reservations checks', () => {
 		});
 
 		const data = await res.json();
-		console.log(data);
 
 		expect(res.status).toBe(201);
 
@@ -67,7 +56,6 @@ describe('Reservations checks', () => {
 		const res = await fetch('http://localhost:3000/reservations');
 		expect(res.status).toBe(200);
 		const data = await res.json();
-		console.log(data);
 		expect(data.length).toBeGreaterThan(0);
 		expect(data).toContainEqual(reservationOutput);
 	});
@@ -76,7 +64,6 @@ describe('Reservations checks', () => {
 		const res = await fetch(`http://localhost:3000/reservations/${reservationOutput._id}`);
 		expect(res.status).toBe(200);
 		const data = await res.json();
-		console.log(data);
 		expect(data).toMatchObject(reservationOutput);
 	});
 

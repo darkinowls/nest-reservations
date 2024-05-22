@@ -1,0 +1,44 @@
+version: '3.7'
+name: sleepr_flex
+
+services:
+
+  mongo:
+    image: mongo:7
+    ports:
+      - "23000:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  reservations:
+    env_file:
+      - .env
+    build:
+      dockerfile: apps/reservations/debug.Dockerfile
+    ports:
+      - "23000:3000"
+    command: node /app/dist/apps/reservations/src/main
+
+  auth:
+    env_file:
+      - .env
+    build:
+      dockerfile: apps/auth/debug.Dockerfile
+    ports:
+      - "23011:3011"
+      - "23010:3010"
+    command: node /app/dist/apps/auth/src/main.js
+
+  payments:
+    env_file:
+      - .env
+    build:
+      dockerfile: apps/payments/debug.Dockerfile
+    ports:
+      - "23020:3020"
+      - "23021:3021"
+    command: node /app/dist/apps/payments/src/main.js
+
+
+volumes:
+  mongo_data:

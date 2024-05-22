@@ -6,5 +6,6 @@ COPY specs specs
 COPY package.json .
 COPY pnpm-lock.yaml .
 COPY tsconfig.json .
+COPY jest.config.js .
 
 RUN npm install

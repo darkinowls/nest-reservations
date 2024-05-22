@@ -12,18 +12,18 @@ export class NotificationsController {
 	@Get()
 	async getHello() {
 		console.log('THE notification microservice is mocked!');
-		// return this.notificationsService.notifyUser({
-		// 	message: 'Hello World!',
-		// 	subject: 'rest api test',
-		// 	email: 'user@example.com'
-		// });
+		return this.notificationsService.notifyUser({
+			message: 'Hello World!',
+			subject: 'rest api test',
+			email: 'user@example.com'
+		});
 	}
 
 	@EventPattern(NOTIFY_USER)
 	async notifyUser(@Payload() data: NotifyUserDto) {
 		console.log(data);
 		console.log('THE notification microservice is mocked!');
-		// return this.notificationsService.notifyUser(data);
+		return this.notificationsService.notifyUser(data);
 	}
 
 }
