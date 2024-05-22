@@ -12,6 +12,9 @@ services:
       - mongo_data:/data/db
 
   reservations:
+    volumes:
+      - ./apps:/app/apps/
+      - ./libs:/app/libs/
     env_file:
       - .env.prod
     build:
@@ -22,6 +25,9 @@ services:
     command: npm run reservations
 
   auth:
+    volumes:
+      - ./apps:/app/apps/
+      - ./libs:/app/libs/
     env_file:
       - .env.prod
     build:
@@ -33,6 +39,9 @@ services:
       - "9229:9229"
 
   payments:
+    volumes:
+      - ./apps:/app/apps/
+      - ./libs:/app/libs/
     env_file:
       - .env.prod
     build:
@@ -44,6 +53,9 @@ services:
       - "9227:9227"
 
   notifications:
+    volumes:
+      - ./apps:/app/apps/
+      - ./libs:/app/libs/
     env_file:
       - .env.prod
     build:
