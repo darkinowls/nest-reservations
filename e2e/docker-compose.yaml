@@ -9,7 +9,7 @@ services:
 
   reservations:
     env_file:
-      - ../.env
+      - ../.env.prod
     build:
       context: ../
       dockerfile: cloud.Dockerfile
@@ -20,7 +20,7 @@ services:
 
   auth:
     env_file:
-      - ../.env
+      - ../.env.prod
     build:
       context: ../
       dockerfile: cloud.Dockerfile
@@ -31,7 +31,7 @@ services:
 
   payments:
     env_file:
-      - ../.env
+      - ../.env.prod
     build:
       context: ../
       dockerfile: cloud.Dockerfile
@@ -42,7 +42,7 @@ services:
 
   notifications:
     env_file:
-      - ../.env
+      - ../.env.prod
     build:
       context: ../
       dockerfile: cloud.Dockerfile

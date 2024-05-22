@@ -6,6 +6,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@app/common/auth/jwt-auth.guard';
 import { GetUser } from '@app/common/decorators/get-user.decorator';
 import { UserDto } from '@app/common/dto/user.dto';
+import { Roles } from '@app/common/decorators/roles.decorator';
 
 @Controller('reservations')
 @ApiTags('reservations')
@@ -34,11 +35,14 @@ export class ReservationsController {
 	}
 
 	@Patch(':id')
+	@UseGuards(JwtAuthGuard)
 	update(@Param('id') id: string, @Body() updateReservationDto: UpdateReservationDto) {
 		return this.reservationsService.update(id, updateReservationDto);
 	}
 
 	@Delete(':id')
+	@UseGuards(JwtAuthGuard)
+	@Roles('admin', 'owner')
 	remove(@Param('id') id: string) {
 		return this.reservationsService.remove(id);
 	}

@@ -14,6 +14,9 @@ export class UserDocument extends AbstractDocument {
 	@Prop()
 		password: string;
 
+	@Prop()
+		roles?: string[];
+
 	static get definition(): ModelDefinition {
 		return {
 			name: UserDocument.name,

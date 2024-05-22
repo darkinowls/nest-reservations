@@ -12,7 +12,7 @@ services:
 
   reservations:
     env_file:
-      - .env
+      - .env.prod
     build:
       dockerfile: apps/reservations/debug.Dockerfile
     ports:
@@ -22,7 +22,7 @@ services:
 
   auth:
     env_file:
-      - .env
+      - .env.prod
     build:
       dockerfile: apps/auth/debug.Dockerfile
     ports:
@@ -32,7 +32,7 @@ services:
 
   payments:
     env_file:
-      - .env
+      - .env.prod
     build:
       dockerfile: apps/payments/debug.Dockerfile
     ports:
@@ -42,7 +42,7 @@ services:
 
   notifications:
     env_file:
-      - .env
+      - .env.prod
     build:
       dockerfile: apps/notifications/debug.Dockerfile
     ports:
