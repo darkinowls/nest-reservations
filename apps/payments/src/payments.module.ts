@@ -4,7 +4,7 @@ import { PaymentsService } from './payments.service';
 import { AppConfigModule } from '@app/common/app-config/app-config.module';
 import { AppLoggerModule } from '@app/common/app-logger/app-logger.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { NOTIFICATION_SERVICE } from '@app/common/consts';
+import { NOTIFICATION_SERVICE, PAYMENT_SERVICE } from '@app/common/consts';
 import { ConfigService } from '@nestjs/config';
 
 @Module({
@@ -15,10 +15,10 @@ import { ConfigService } from '@nestjs/config';
 			{
 				name: NOTIFICATION_SERVICE,
 				useFactory: (configService: ConfigService) => ({
-					transport: Transport.TCP,
+					transport: Transport.RMQ,
 					options: {
-						host: configService.get('NOTIFICATION_HOST'),
-						port: configService.get('NOTIFICATION_TCP_PORT')
+						urls: [configService.getOrThrow<string>('RABBITMQ_URL')],
+						queue: PAYMENT_SERVICE
 					}
 				}),
 				inject: [ConfigService]

@@ -22,10 +22,10 @@ import { HealthModule } from '@app/common/health/health.module';
 			{
 				name: AUTH_SERVICE,
 				useFactory: (cs: ConfigService) => ({
-					transport: Transport.TCP,
+					transport: Transport.RMQ,
 					options: {
-						host: cs.getOrThrow('AUTH_HOST'),
-						port: cs.getOrThrow('AUTH_TCP_PORT')
+						urls: [cs.getOrThrow<string>('RABBITMQ_URL')],
+						queue: AUTH_SERVICE
 					}
 				}),
 				inject: [ConfigService]
@@ -33,10 +33,10 @@ import { HealthModule } from '@app/common/health/health.module';
 			{
 				name: PAYMENT_SERVICE,
 				useFactory: (cs: ConfigService) => ({
-					transport: Transport.TCP,
+					transport: Transport.RMQ,
 					options: {
-						host: cs.getOrThrow('PAYMENT_HOST'),
-						port: cs.getOrThrow('PAYMENT_TCP_PORT')
+						urls: [cs.getOrThrow<string>('RABBITMQ_URL')],
+						queue: PAYMENT_SERVICE
 					}
 				}),
 				inject: [ConfigService]

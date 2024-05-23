@@ -6,16 +6,19 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 import { Transport } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
+import { AUTH_SERVICE } from '@app/common/consts';
 
 async function bootstrap() {
 	const app = await NestFactory.create(AuthModule);
 	const configService = app.get(ConfigService);
 	app.connectMicroservice({
-		transport: Transport.TCP,
+		transport: Transport.RMQ,
 		options: {
-			host: '0.0.0.0',
-			port: configService.getOrThrow('AUTH_TCP_PORT')
+			urls: [configService.getOrThrow('RABBITMQ_URL')],
+			queue: AUTH_SERVICE,
 		}
+
+
 	});
 
 	app.use(
