@@ -19,7 +19,7 @@ export class UserEntity extends AbstractEntity<UserEntity> {
 		onUpdate: 'CASCADE',
 	})
 	@JoinTable()
-		roles: RoleEntity[] = [];
+		roles: RoleEntity[];
 }
 
 

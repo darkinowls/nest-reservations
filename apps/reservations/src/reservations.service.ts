@@ -9,6 +9,7 @@ import { catchError, map } from 'rxjs';
 import { MakePaymentDto } from '@app/common/dto/makePayment.dto';
 import { ReservationEntity } from './entities/reservation.entity';
 import { UserEntity } from '@app/common/entities/user.entity';
+import { ReservationWithLinkDto } from './dto/reservation-with-link.dto';
 
 @Injectable()
 export class ReservationsService {
@@ -36,7 +37,7 @@ export class ReservationsService {
 			.send(CREATE_CHARGE_MESSAGE, paymentInfo)
 			.pipe(
 				map(
-					async (value: string) => {
+					async (value: string): Promise<ReservationWithLinkDto> => {
 						const res = new ReservationEntity({
 							...createReservationDto,
 							userId: user._id

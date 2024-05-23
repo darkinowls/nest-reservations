@@ -1,6 +1,5 @@
 import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { UserEntity } from './users/entities/user.entity';
 import { Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
@@ -9,6 +8,7 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 import { AUTH_MESSAGE } from '@app/common/consts';
 import { GetUser } from '@app/common/decorators/get-user.decorator';
 import { LoginUserDto } from './users/dto/login-user.dto';
+import { UserEntity } from '@app/common/entities/user.entity';
 
 
 @Controller('auth')
