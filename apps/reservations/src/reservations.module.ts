@@ -6,9 +6,11 @@ import { ReservationsRepository } from './reservations.repository';
 import { ReservationEntity } from './entities/reservation.entity';
 import { AppLoggerModule } from '@app/common/app-logger/app-logger.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { AUTH_SERVICE, PAYMENT_SERVICE } from '@app/common/consts';
 import { ConfigService } from '@nestjs/config';
 import { HealthModule } from '@app/common/health/health.module';
+import { PAYMENTS_PACKAGE_NAME } from '@app/common/proto/payments';
+import { AUTH_PACKAGE_NAME } from '@app/common/proto/auth';
+import { join } from 'path';
 
 @Module({
 	imports: [
@@ -20,23 +22,25 @@ import { HealthModule } from '@app/common/health/health.module';
 		]),
 		ClientsModule.registerAsync([
 			{
-				name: AUTH_SERVICE,
+				name: AUTH_PACKAGE_NAME,
 				useFactory: (cs: ConfigService) => ({
-					transport: Transport.RMQ,
+					transport: Transport.GRPC,
 					options: {
-						urls: [cs.getOrThrow<string>('RABBITMQ_URL')],
-						queue: AUTH_SERVICE
+						package: AUTH_PACKAGE_NAME,
+						protoPath: join(__dirname, '../../../../proto/auth.proto'),
+						url: cs.getOrThrow('AUTH_GRPC_URL')
 					}
 				}),
 				inject: [ConfigService]
 			},
 			{
-				name: PAYMENT_SERVICE,
+				name: PAYMENTS_PACKAGE_NAME,
 				useFactory: (cs: ConfigService) => ({
-					transport: Transport.RMQ,
+					transport: Transport.GRPC,
 					options: {
-						urls: [cs.getOrThrow<string>('RABBITMQ_URL')],
-						queue: PAYMENT_SERVICE
+						package: PAYMENTS_PACKAGE_NAME,
+						protoPath: join(__dirname, '../../../../proto/payments.proto'),
+						url: cs.getOrThrow('PAYMENTS_GRPC_URL')
 					}
 				}),
 				inject: [ConfigService]

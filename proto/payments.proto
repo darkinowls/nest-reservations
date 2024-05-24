@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package payments;
+
+import "google/protobuf/timestamp.proto";
+
+service PaymentsService {
+  rpc payForReservation(MakePaymentMessage) returns (LinkMessage) {}
+}
+
+message MakePaymentMessage {
+  string email = 1;
+  PurchaseUnitRequestMessage purchaseUnitRequest = 2;
+}
+message PurchaseUnitRequestMessage {
+  AmountMessage amount = 1;
+}
+message AmountMessage {
+  string value = 1;
+  string currency_code = 2;
+}
+
+message LinkMessage{
+  //  dones't support _id
+  string link = 1;
+}

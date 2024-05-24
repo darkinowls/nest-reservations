@@ -5,6 +5,7 @@ import { UsersService } from '../users/users.service';
 import { ConfigService } from '@nestjs/config';
 import { ExtractJwt } from 'passport-jwt';
 import { JwtPayloadDto } from '../dtos/jwt-payload.dto';
+import { UserEntity } from '@app/common/entities/user.entity';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -27,8 +28,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
 
 	async validate(payload: JwtPayloadDto) {
+		const user: UserEntity = await this.userService.findOne(payload.id, true);
 		console.log(payload);
 		console.log('payload');
-		return this.userService.findOne(payload.id);
+		return user;
 	}
 }

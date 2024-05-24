@@ -18,7 +18,7 @@ export class AuthService {
 	async login(user: UserEntity, response: Response) {
 		const payload: JwtPayloadDto =
 			{
-				id: user._id,
+				id: user.id,
 				email: user.email
 			};
 		const expiresIn = new Date();

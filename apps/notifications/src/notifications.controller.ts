@@ -1,11 +1,15 @@
 import { Controller, Get } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
-import { EventPattern, Payload } from '@nestjs/microservices';
-import { NOTIFY_USER } from '@app/common/consts';
 import { NotifyUserDto } from '@app/common/dto/notifyUser.dto';
+import {
+	NotificationsServiceController,
+	NotificationsServiceControllerMethods,
+	ResponseMesssage
+} from '@app/common/proto/notifications';
 
 @Controller()
-export class NotificationsController {
+@NotificationsServiceControllerMethods()
+export class NotificationsController implements NotificationsServiceController {
 	constructor(private readonly notificationsService: NotificationsService) {
 	}
 
@@ -19,11 +23,12 @@ export class NotificationsController {
 		});
 	}
 
-	@EventPattern(NOTIFY_USER)
-	async notifyUser(@Payload() data: NotifyUserDto) {
+	async notifyUser(data: NotifyUserDto): Promise<ResponseMesssage> {
 		console.log(data);
 		console.log('THE notification microservice is mocked!');
-		return this.notificationsService.notifyUser(data);
+		return {
+			response: await this.notificationsService.notifyUser(data)
+		};
 	}
 
 }

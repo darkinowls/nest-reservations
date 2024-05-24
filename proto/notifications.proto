@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package notifications;
+
+import "google/protobuf/timestamp.proto";
+
+service NotificationsService {
+  rpc notifyUser(NotifyUserMessage) returns (ResponseMesssage){};
+}
+
+message NotifyUserMessage {
+  string email = 1;
+  string subject = 2;
+  string message = 3;
+}
+message ResponseMesssage {
+  string response = 1;
+}

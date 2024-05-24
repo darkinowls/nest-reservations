@@ -4,8 +4,9 @@ import { PaymentsService } from './payments.service';
 import { AppConfigModule } from '@app/common/app-config/app-config.module';
 import { AppLoggerModule } from '@app/common/app-logger/app-logger.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { NOTIFICATION_SERVICE, PAYMENT_SERVICE } from '@app/common/consts';
 import { ConfigService } from '@nestjs/config';
+import { NOTIFICATIONS_PACKAGE_NAME } from '@app/common/proto/notifications';
+import { join } from 'path';
 
 @Module({
 	imports: [
@@ -13,12 +14,13 @@ import { ConfigService } from '@nestjs/config';
 		AppLoggerModule,
 		ClientsModule.registerAsync([
 			{
-				name: NOTIFICATION_SERVICE,
+				name: NOTIFICATIONS_PACKAGE_NAME,
 				useFactory: (configService: ConfigService) => ({
-					transport: Transport.RMQ,
+					transport: Transport.GRPC,
 					options: {
-						urls: [configService.getOrThrow<string>('RABBITMQ_URL')],
-						queue: PAYMENT_SERVICE
+						package: NOTIFICATIONS_PACKAGE_NAME,
+						protoPath: join(__dirname, '../../../../proto/notifications.proto'),
+						url: configService.getOrThrow('NOTIFICATIONS_GRPC_URL')
 					}
 				}),
 				inject: [ConfigService]

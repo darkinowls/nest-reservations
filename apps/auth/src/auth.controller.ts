@@ -4,16 +4,22 @@ import { Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { MessagePattern, Payload } from '@nestjs/microservices';
-import { AUTH_MESSAGE } from '@app/common/consts';
 import { GetUser } from '@app/common/decorators/get-user.decorator';
 import { LoginUserDto } from './users/dto/login-user.dto';
 import { UserEntity } from '@app/common/entities/user.entity';
+import {
+	AuthServiceController,
+	AuthServiceControllerMethods,
+	UserMessage
+} from '@app/common/proto/auth';
+import { Timestamp } from '../../../google/protobuf/timestamp';
+import { DateConverter } from '@app/common/converters/date.converter';
 
 
 @Controller('auth')
 @ApiTags('auth')
-export class AuthController {
+@AuthServiceControllerMethods()
+export class AuthController implements AuthServiceController {
 	constructor(private readonly authService: AuthService) {
 	}
 
@@ -35,14 +41,21 @@ export class AuthController {
 	}
 
 
-	@MessagePattern(AUTH_MESSAGE)
 	@UseGuards(JwtAuthGuard)
 	async auth(
-		@Payload() data,
-	) {
+		data: any
+	): Promise<UserMessage> {
 		console.log(data);
-		const user: UserEntity = data.user
-		return user;
+		const user: UserEntity = data.user;
+		console.log(user);
+		return {
+			email: user.email,
+			password: user.password,
+			createdAt: DateConverter.toTimeStamp(user.createdAt),
+			updatedAt: DateConverter.toTimeStamp(user.updatedAt),
+			id: user.id,
+			roles: user.roles.map(role => role.name)
+		};
 	}
 
 }

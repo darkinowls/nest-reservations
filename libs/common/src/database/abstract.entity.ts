@@ -4,7 +4,7 @@ import { CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } fr
 @Entity()
 export abstract class AbstractEntity<T> {
 	@PrimaryGeneratedColumn('uuid')
-		_id: string;
+		id: string;
 
 	@CreateDateColumn()
 		createdAt: Date;
@@ -15,6 +15,7 @@ export abstract class AbstractEntity<T> {
 	constructor(entity: Partial<T>) {
 		Object.assign(this, entity);
 	}
+
 
 
 }

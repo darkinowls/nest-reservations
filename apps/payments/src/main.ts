@@ -4,18 +4,19 @@ import { PaymentsModule } from './payments.module';
 import { Transport } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
-import { PAYMENT_SERVICE } from '@app/common/consts';
+import { join } from 'path';
+import { PAYMENTS_PACKAGE_NAME } from '@app/common/proto/payments';
 
 
 async function bootstrap() {
 	const app = await NestFactory.create(PaymentsModule);
 	const configService = app.get(ConfigService);
 	app.connectMicroservice({
-		transport: Transport.RMQ,
+		transport: Transport.GRPC,
 		options: {
-			urls: [configService.getOrThrow('RABBITMQ_URL')],
-			noAck: false,
-			queue: PAYMENT_SERVICE
+			package: PAYMENTS_PACKAGE_NAME,
+			protoPath: join(__dirname, '../../../../proto/payments.proto'),
+			url: configService.getOrThrow('PAYMENTS_GRPC_URL')
 		}
 	});
 	app.useGlobalPipes(

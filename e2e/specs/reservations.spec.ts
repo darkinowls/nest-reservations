@@ -61,7 +61,7 @@ describe('Reservations checks', () => {
 	});
 
 	it('should get the reservation', async () => {
-		const res = await fetch(`http://localhost:3000/reservations/${reservationOutput._id}`);
+		const res = await fetch(`http://localhost:3000/reservations/${reservationOutput.id}`);
 		expect(res.status).toBe(200);
 		const data = await res.json();
 		expect(data).toMatchObject(reservationOutput);

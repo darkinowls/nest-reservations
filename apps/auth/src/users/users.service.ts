@@ -36,7 +36,9 @@ export class UsersService {
 	async findByEmail(email: string) {
 		try {
 			return await this.userRepository.findOne({
-				email: email
+				where: {
+					email: email
+				}
 			});
 		} catch (error) {
 			// no user
@@ -49,15 +51,18 @@ export class UsersService {
 		return this.userRepository.find({});
 	}
 
-	findOne(id: string) {
+	findOne(id: string, includeRoles: boolean = false) {
 		return this.userRepository.findOne({
-			_id: id
+			where: {
+				id
+			},
+			relations: includeRoles ? ['roles'] : []
 		});
 	}
 
 	update(id: string, updateUserDto: UpdateUserDto) {
 		return this.userRepository.findOneAndUpdate({
-			_id: id
+			id
 		},
 		updateUserDto
 		);
@@ -66,13 +71,15 @@ export class UsersService {
 
 	remove(id: string) {
 		return this.userRepository.findOneAndDelete({
-			_id: id
+			id
 		});
 	}
 
 	async validateUser(email: string, password: string) {
 		const user = await this.userRepository.findOne({
-			email: email
+			where: {
+				email: email
+			}
 		});
 
 		if (user && await bcrypt.compare(password, user.password)) {

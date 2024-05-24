@@ -1,6 +1,6 @@
 import { AbstractEntity } from '@app/common/database/abstract.entity';
 import { Logger, NotFoundException } from '@nestjs/common';
-import { EntityManager, FindOptionsWhere, Repository, UpdateResult } from 'typeorm';
+import { EntityManager, FindOneOptions, FindOptionsWhere, Repository, UpdateResult } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 export abstract class AbstractRepository<TEntity extends AbstractEntity<TEntity>> {
@@ -17,14 +17,14 @@ export abstract class AbstractRepository<TEntity extends AbstractEntity<TEntity>
 		return await this.entityRepository.save(entity);
 	}
 
-	async findOne(where: FindOptionsWhere<TEntity>): Promise<TEntity> {
-		const entity = await this.entityRepository.findOne({
-			where
-		});
+	async findOne(options:  FindOneOptions<TEntity>): Promise<TEntity> {
+		const entity = await this.entityRepository.findOne(
+			options
+		);
 
 		if (!entity) {
-			this.logger.warn(`entity not found with filter: ${JSON.stringify(where)}`);
-			throw new NotFoundException(`entity not found with filter: ${JSON.stringify(where)}`);
+			this.logger.warn(`entity not found with filter: ${JSON.stringify(options)}`);
+			throw new NotFoundException(`entity not found with filter: ${JSON.stringify(options)}`);
 		}
 
 		this.logger.debug(`Found entity: ${JSON.stringify(entity)}`);
@@ -42,7 +42,9 @@ export abstract class AbstractRepository<TEntity extends AbstractEntity<TEntity>
 			throw new NotFoundException(`entity not found with filter: ${JSON.stringify(where)}`);
 		}
 
-		const entity = await this.findOne(where);
+		const entity = await this.findOne({
+			where
+		});
 
 		this.logger.debug(`Updated entity: ${JSON.stringify(entity)}`);
 		return entity;

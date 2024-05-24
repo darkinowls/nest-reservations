@@ -1,52 +1,63 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { UpdateReservationDto } from './dto/update-reservation.dto';
 import { ReservationsRepository } from './reservations.repository';
-import { CREATE_CHARGE_MESSAGE, PAYMENT_SERVICE } from '@app/common/consts';
-import { ClientProxy } from '@nestjs/microservices';
+import { ClientGrpc } from '@nestjs/microservices';
 import { catchError, map } from 'rxjs';
 
-import { MakePaymentDto } from '@app/common/dto/makePayment.dto';
+import { AmountDto, MakePaymentDto, PurchaseUnitRequestDto } from '@app/common/dto/makePayment.dto';
 import { ReservationEntity } from './entities/reservation.entity';
 import { UserEntity } from '@app/common/entities/user.entity';
 import { ReservationWithLinkDto } from './dto/reservation-with-link.dto';
+import {
+	LinkMessage,
+	PAYMENTS_PACKAGE_NAME,
+	PAYMENTS_SERVICE_NAME,
+	PaymentsServiceClient
+} from '@app/common/proto/payments';
 
 @Injectable()
-export class ReservationsService {
+export class ReservationsService implements OnModuleInit {
 
+	private paymentService: PaymentsServiceClient;
 
 	constructor(
 		private readonly reservationsRepository: ReservationsRepository,
-		@Inject(PAYMENT_SERVICE) private readonly paymentClient: ClientProxy
+		@Inject(PAYMENTS_PACKAGE_NAME) private readonly paymentsPackage: ClientGrpc
 	) {
 	}
 
+	onModuleInit() {
+		this.paymentService = this.paymentsPackage.getService<PaymentsServiceClient>(PAYMENTS_SERVICE_NAME);
+	}
+
 	async create(createReservationDto: CreateReservationDto, user: UserEntity) {
+		const amount = new AmountDto('100.00', 'USD');
+		console.log('INSIDE CREATE');
+		console.log(user);
 		const paymentInfo: MakePaymentDto = {
 			email: user.email,
-			purchaseUnitRequest: {
-				amount: {
-					value: '100.00',
-					currency_code: 'USD'
-				}
-			}
+			purchaseUnitRequest: new PurchaseUnitRequestDto(amount, 'Reservation')
 		};
 		// TODO: USE WEBHOOKS
 		// TODO: add HTTPS
-		return this.paymentClient
-			.send(CREATE_CHARGE_MESSAGE, paymentInfo)
+		return this.paymentService.payForReservation(
+			paymentInfo
+		)
 			.pipe(
 				map(
-					async (value: string): Promise<ReservationWithLinkDto> => {
+					async (value: LinkMessage): Promise<ReservationWithLinkDto> => {
+						console.log('INSIDE MAP');
+						console.log(user);
 						const res = new ReservationEntity({
 							...createReservationDto,
-							userId: user._id
+							userId: user.id
 						});
 						const resDoc = await this
 							.reservationsRepository.create(res);
 						return {
 							...resDoc,
-							approvalLink: value
+							approvalLink: value.link
 						};
 					}
 				),
@@ -63,20 +74,20 @@ export class ReservationsService {
 
 	findOne(id: string) {
 		return this.reservationsRepository.findOne({
-			_id: id
+			where: { id }
 		});
 	}
 
 	update(id: string, updateReservationDto: UpdateReservationDto) {
 		return this.reservationsRepository.findOneAndUpdate(
-			{ _id: id },
+			{ id },
 			updateReservationDto
 		);
 	}
 
 	remove(id: string) {
 		return this.reservationsRepository.findOneAndDelete({
-			_id: id
+			id
 		});
 	}
 
