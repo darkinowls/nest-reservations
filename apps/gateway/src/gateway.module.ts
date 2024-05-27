@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppConfigModule } from '@app/common/app-config/app-config.module';
 import { AppLoggerModule } from '@app/common/app-logger/app-logger.module';
 import { GraphQLModule } from '@nestjs/graphql';
-import { ApolloDriverConfig, ApolloGatewayDriver } from '@nestjs/apollo';
+import { ApolloGatewayDriver, ApolloGatewayDriverConfig } from '@nestjs/apollo';
 import { ConfigService } from '@nestjs/config';
 import { IntrospectAndCompose } from '@apollo/gateway';
 
@@ -10,7 +10,7 @@ import { IntrospectAndCompose } from '@apollo/gateway';
 	imports: [
 		AppConfigModule,
 		AppLoggerModule,
-		GraphQLModule.forRootAsync<ApolloDriverConfig>({
+		GraphQLModule.forRootAsync<ApolloGatewayDriverConfig>({
 			driver: ApolloGatewayDriver,
 			useFactory: (cs: ConfigService) => ({
 				gateway: {
