@@ -1,29 +1,36 @@
-import { AbstractDocument } from "@app/common/database/abstract.schema";
-import { ModelDefinition, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { AbstractDocument } from '@app/common/database/abstract.schema';
+import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Field, ObjectType } from '@nestjs/graphql';
 
 @Schema({
-  versionKey: false
+	versionKey: false
 })
-export class ReservationDocument extends AbstractDocument  {
+@ObjectType()
+export class ReservationDocument extends AbstractDocument {
 
-  @Prop()
-  startDate: Date;
-  @Prop()
-  endDate: Date;
-  @Prop()
-  userId: string;
-  @Prop()
-  placeId: string;
-  @Prop()
-  invoiceId: string;
+	@Prop()
+	@Field()
+		startDate: Date;
+	@Prop()
+	@Field()
+		endDate: Date;
+	@Prop()
+	@Field()
+		userId: string;
+	@Prop()
+	@Field()
+		placeId: string;
+	@Prop()
+	@Field()
+		invoiceId: string;
 
 
-  static get definition(): ModelDefinition {
-    return {
-      name: ReservationDocument.name,
-      schema: SchemaFactory.createForClass(ReservationDocument)
-    };
-  }
+	static get definition(): ModelDefinition {
+		return {
+			name: ReservationDocument.name,
+			schema: SchemaFactory.createForClass(ReservationDocument)
+		};
+	}
 
 
 }

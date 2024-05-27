@@ -51,7 +51,7 @@ export class PaymentsService {
 			message: 'Make the payment, unless reservation will be undone'
 		};
 
-		if (this.configService.get('MOCK_NOTIFICATIONS') !== 'true'){
+		if (this.configService.get('MOCK_NOTIFICATIONS') !== 'true') {
 			this.notificationClient.emit(NOTIFY_USER, notifyUser);
 		}
 		this.logger.debug(res);

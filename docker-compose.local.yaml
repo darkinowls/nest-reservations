@@ -78,6 +78,10 @@ services:
     ports:
       - "3040:3040"
       - "9225:9225"
-
+    depends_on:
+      - reservations
+      - auth
+      - payments
+      - notifications
 volumes:
   mongo_data:

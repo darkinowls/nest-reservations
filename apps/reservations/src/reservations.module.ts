@@ -9,6 +9,9 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AUTH_SERVICE, PAYMENT_SERVICE } from '@app/common/consts';
 import { ConfigService } from '@nestjs/config';
 import { HealthModule } from '@app/common/health/health.module';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig, ApolloFederationDriver, ApolloFederationDriverConfig } from '@nestjs/apollo';
+import { ReservationsResolver } from './reservations.resolver';
 
 @Module({
 	imports: [
@@ -18,6 +21,12 @@ import { HealthModule } from '@app/common/health/health.module';
 		DatabaseModule.forFeature([
 			ReservationDocument.definition
 		]),
+		GraphQLModule.forRoot<ApolloFederationDriverConfig>({
+			driver: ApolloFederationDriver,
+			autoSchemaFile: {
+				federation: 2
+			}
+		}),
 		ClientsModule.registerAsync([
 			{
 				name: AUTH_SERVICE,
@@ -45,7 +54,7 @@ import { HealthModule } from '@app/common/health/health.module';
 
 	],
 	controllers: [ReservationsController],
-	providers: [ReservationsService, ReservationsRepository]
+	providers: [ReservationsService, ReservationsRepository, ReservationsResolver]
 })
 export class ReservationsModule {
 }

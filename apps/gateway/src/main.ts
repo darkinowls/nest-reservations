@@ -5,6 +5,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { Logger } from 'nestjs-pino';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
+import { setApp } from './app';
 
 async function bootstrap() {
 	const app = await NestFactory.create(GatewayModule);
@@ -23,12 +24,8 @@ async function bootstrap() {
 			}
 		})
 	);
-	app.useLogger(
-		app.get(Logger)
-	);
-
-	await app.listen(configService.getOrThrow('AUTH_HTTP_PORT'));
-
+	await app.listen(configService.getOrThrow('GATEWAY_HTTP_PORT'));
+	setApp(app);
 }
 
 bootstrap();
