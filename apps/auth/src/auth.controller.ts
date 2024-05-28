@@ -38,10 +38,10 @@ export class AuthController {
 	@MessagePattern(AUTH_MESSAGE)
 	@UseGuards(JwtAuthGuard)
 	async auth(
-		@Payload() data,
+		@Payload() data
 	) {
 		console.log(data);
-		const user: UserEntity = data.user
+		const user: UserEntity = data.user;
 		return user;
 	}
 

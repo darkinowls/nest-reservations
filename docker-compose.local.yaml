@@ -10,8 +10,12 @@ services:
       - "5431:5432"
     env_file:
       - .env.prod
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
   reservations:
+    depends_on:
+      - postgres
     volumes:
       - ./apps:/app/apps/
       - ./libs:/app/libs/
@@ -22,7 +26,14 @@ services:
     ports:
       - "3000:3000"
       - "9228:9228"
-    command: npm run reservations
+    command: |
+      sh -c "
+       cp -r /app/apps/reservations/prisma /app/prisma && \
+       cat /app/apps/reservations/.env > /app/.env && \
+       pnpm prisma generate --schema /app/prisma/schema.prisma && \
+       pnpm prisma migrate deploy --schema /app/prisma/schema.prisma && \
+       npm run reservations
+      "
 
   auth:
     volumes:
@@ -32,7 +43,14 @@ services:
       - .env.prod
     build:
       dockerfile: local.Dockerfile
-    command: npm run auth
+    command: |
+      sh -c "
+       cp -r /app/apps/auth/prisma /app/prisma && \
+       cat /app/apps/auth/.env > /app/.env && \
+       pnpm prisma generate --schema /app/prisma/schema.prisma && \
+       pnpm prisma migrate deploy --schema /app/prisma/schema.prisma && \
+       npm run auth
+      "
     ports:
       - "3011:3011"
       - "3010:3010"
@@ -67,4 +85,4 @@ services:
       - "9226:9226"
 
 volumes:
-  mongo_data:
+  postgres_data:

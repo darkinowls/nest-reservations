@@ -1,23 +1,19 @@
 import { Module } from '@nestjs/common';
 import { ReservationsService } from './reservations.service';
 import { ReservationsController } from './reservations.controller';
-import { DatabaseModule } from '@app/common/database/database.module';
-import { ReservationsRepository } from './reservations.repository';
-import { ReservationEntity } from './entities/reservation.entity';
 import { AppLoggerModule } from '@app/common/app-logger/app-logger.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AUTH_SERVICE, PAYMENT_SERVICE } from '@app/common/consts';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { HealthModule } from '@app/common/health/health.module';
+import { PrismaService } from './prisma.service';
+import { AppConfigModule } from '@app/common/app-config/app-config.module';
 
 @Module({
 	imports: [
 		AppLoggerModule,
-		DatabaseModule,
 		HealthModule,
-		DatabaseModule.forFeature([
-			ReservationEntity
-		]),
+		AppConfigModule,
 		ClientsModule.registerAsync([
 			{
 				name: AUTH_SERVICE,
@@ -45,7 +41,7 @@ import { HealthModule } from '@app/common/health/health.module';
 
 	],
 	controllers: [ReservationsController],
-	providers: [ReservationsService, ReservationsRepository]
+	providers: [ReservationsService, PrismaService]
 })
 export class ReservationsModule {
 }

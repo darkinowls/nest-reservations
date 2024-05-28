@@ -1,0 +1,13 @@
+{
+  "name": "@sleepr/reservations",
+  "version": "1.0.0",
+  "scripts": {
+    "migrate" : "dotenv -e .env.local -- prisma migrate dev"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.14.0"
+  },
+  "devDependencies": {
+    "dotenv-cli": "^7.4.2"
+  }
+}

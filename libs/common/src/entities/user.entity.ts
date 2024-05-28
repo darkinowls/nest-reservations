@@ -1,25 +1,13 @@
-import { AbstractEntity } from '@app/common/database/abstract.entity';
-import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
-import { RoleEntity } from './role.entity';
+export class UserEntity {
 
-@Entity()
-export class UserEntity extends AbstractEntity<UserEntity> {
+	id: string;
 
-	@Column({
-		unique: true,
-	})
-		email: string;
+	email: string;
 
-	@Column()
-		password: string;
+	password: string;
 
-	@ManyToMany(() => RoleEntity, {
-		cascade: true,
-		onDelete: 'CASCADE',
-		onUpdate: 'CASCADE',
-	})
-	@JoinTable()
-		roles: RoleEntity[];
+	roles?: string[];
+
 }
 
 

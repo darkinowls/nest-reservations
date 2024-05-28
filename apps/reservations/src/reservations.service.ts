@@ -1,22 +1,22 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { UpdateReservationDto } from './dto/update-reservation.dto';
-import { ReservationsRepository } from './reservations.repository';
 import { CREATE_CHARGE_MESSAGE, PAYMENT_SERVICE } from '@app/common/consts';
 import { ClientProxy } from '@nestjs/microservices';
 import { catchError, map } from 'rxjs';
 
 import { MakePaymentDto } from '@app/common/dto/makePayment.dto';
-import { ReservationEntity } from './entities/reservation.entity';
 import { UserEntity } from '@app/common/entities/user.entity';
 import { ReservationWithLinkDto } from './dto/reservation-with-link.dto';
+import { PrismaService } from './prisma.service';
+import { Reservation } from '.prisma/client';
 
 @Injectable()
 export class ReservationsService {
 
 
 	constructor(
-		private readonly reservationsRepository: ReservationsRepository,
+		private readonly prismaService: PrismaService,
 		@Inject(PAYMENT_SERVICE) private readonly paymentClient: ClientProxy
 	) {
 	}
@@ -37,13 +37,18 @@ export class ReservationsService {
 			.send(CREATE_CHARGE_MESSAGE, paymentInfo)
 			.pipe(
 				map(
-					async (value: string): Promise<ReservationWithLinkDto> => {
-						const res = new ReservationEntity({
-							...createReservationDto,
-							userId: user._id
-						});
+					async (value): Promise<ReservationWithLinkDto> => {
 						const resDoc = await this
-							.reservationsRepository.create(res);
+							.prismaService.reservation.create(
+								{
+									data: {
+										userId: user.id,
+										endDate: createReservationDto.endDate,
+										startDate: createReservationDto.startDate,
+										invoiceId: createReservationDto.invoiceId
+									}
+								}
+							);
 						return {
 							...resDoc,
 							approvalLink: value
@@ -58,25 +63,33 @@ export class ReservationsService {
 	}
 
 	findAll() {
-		return this.reservationsRepository.find({});
+		return this.prismaService.reservation.findMany();
 	}
 
-	findOne(id: string) {
-		return this.reservationsRepository.findOne({
-			_id: id
+	findOne(id: string): Promise<Reservation> {
+		return this.prismaService.reservation.findFirstOrThrow({
+			where: {
+				id
+			}
 		});
 	}
 
-	update(id: string, updateReservationDto: UpdateReservationDto) {
-		return this.reservationsRepository.findOneAndUpdate(
-			{ _id: id },
-			updateReservationDto
+	update(id: string, updateReservationDto: UpdateReservationDto): Promise<Reservation> {
+		return this.prismaService.reservation.update(
+			{
+				where: {
+					id
+				},
+				data: updateReservationDto
+			}
 		);
 	}
 
-	remove(id: string) {
-		return this.reservationsRepository.findOneAndDelete({
-			_id: id
+	remove(id: string): Promise<Reservation> {
+		return this.prismaService.reservation.delete({
+			where: {
+				id
+			}
 		});
 	}
 

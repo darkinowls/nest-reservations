@@ -4,6 +4,7 @@ import { catchError, map, Observable, tap } from 'rxjs';
 import { AUTH_MESSAGE, AUTH_SERVICE } from '@app/common/consts';
 import { Reflector } from '@nestjs/core';
 import { UserEntity } from '@app/common/entities/user.entity';
+import { HttpException } from '@nestjs/common/exceptions/http.exception';
 
 
 @Injectable()
@@ -30,12 +31,12 @@ export class JwtAuthGuard implements CanActivate {
 			token: jwt
 		}).pipe(
 			tap((res: UserEntity) => {
-				if (!roles) {
+				if (!roles || !res.roles) {
 					context.switchToHttp().getRequest().user = res;
 					return;
 				}
 				for (const role of roles) {
-					if (res.roles.map(value => value.name).includes(role)) {
+					if (res.roles.includes(role)) {
 						context.switchToHttp().getRequest().user = res;
 						return;
 					}
@@ -45,7 +46,7 @@ export class JwtAuthGuard implements CanActivate {
 				throw new UnauthorizedException(errorMessage);
 			}),
 			map(() => true),
-			catchError((err: UnauthorizedException) => {
+			catchError((err: HttpException) => {
 				console.log(err);
 				if (err instanceof UnauthorizedException) {
 					throw err;

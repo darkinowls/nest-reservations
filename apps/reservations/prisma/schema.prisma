@@ -1,0 +1,20 @@
+generator client {
+  provider      = "prisma-client-js"
+  output        = "../node_modules/.prisma/client"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Reservation {
+  id        String   @id @default(uuid())
+  startDate DateTime
+  endDate   DateTime
+  userId    String
+  invoiceId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

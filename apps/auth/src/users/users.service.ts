@@ -1,42 +1,44 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { UserRepository } from './user.repository';
 import * as bcrypt from 'bcryptjs';
-import { UserEntity } from '@app/common/entities/user.entity';
-import { RoleEntity } from '@app/common/entities/role.entity';
+import { PrismaService } from './prisma.service';
+import { User } from '.prisma/client';
 
 @Injectable()
 export class UsersService {
 
-	constructor(private readonly userRepository: UserRepository) {
+	constructor(private readonly prismaService: PrismaService) {
 	}
 
-	async create(createUserDto: CreateUserDto) {
+	async create(createUserDto: CreateUserDto): Promise<User> {
 
 		const existingUser = await this.findByEmail(createUserDto.email);
 		if (existingUser) {
 			throw new BadRequestException('User already exists');
 		}
 
-		const user = new UserEntity({
-			...createUserDto,
-			password: await bcrypt.hash(createUserDto.password, 10),
-			roles: createUserDto.roles ? createUserDto.roles.map(
-				(role) => new RoleEntity(role)
-			) : []
-		});
 		try {
-			return await this.userRepository.create(user);
+			return await this.prismaService.user.create({
+				data: {
+					...createUserDto,
+					password: await bcrypt.hash(createUserDto.password, 10),
+					roles: createUserDto.roles ? createUserDto.roles.map(
+						(role) => role.name
+					) : []
+				}
+			});
 		} catch (error) {
+			console.log(error);
 			throw new BadRequestException('Can\'t create the user');
 		}
 	}
 
-	async findByEmail(email: string) {
+	async findByEmail(email: string): Promise<User | null> {
 		try {
-			return await this.userRepository.findOne({
-				email: email
+			return await this.prismaService.user.findFirstOrThrow({
+				where: {
+					email
+				}
 			});
 		} catch (error) {
 			// no user
@@ -45,35 +47,20 @@ export class UsersService {
 	}
 
 
-	findAll() {
-		return this.userRepository.find({});
+	async findAll(): Promise<User[]> {
+		return await this.prismaService.user.findMany();
 	}
 
-	findOne(id: string) {
-		return this.userRepository.findOne({
-			_id: id
+	async findOne(id: string): Promise<User> {
+		return await this.prismaService.user.findUniqueOrThrow({
+			where: {
+				id
+			}
 		});
 	}
 
-	update(id: string, updateUserDto: UpdateUserDto) {
-		return this.userRepository.findOneAndUpdate({
-			_id: id
-		},
-		updateUserDto
-		);
-
-	}
-
-	remove(id: string) {
-		return this.userRepository.findOneAndDelete({
-			_id: id
-		});
-	}
-
-	async validateUser(email: string, password: string) {
-		const user = await this.userRepository.findOne({
-			email: email
-		});
+	async validateUser(email: string, password: string): Promise<User> {
+		const user: User | null = await this.findByEmail(email);
 
 		if (user && await bcrypt.compare(password, user.password)) {
 			return user;

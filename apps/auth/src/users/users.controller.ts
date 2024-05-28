@@ -7,7 +7,7 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ApiTags } from '@nestjs/swagger';
-
+import { User } from '.prisma/client';
 
 @Controller('users')
 @ApiTags('users')
@@ -16,12 +16,12 @@ export class UsersController {
 	}
 
 	@Post()
-	create(@Body() createUserDto: CreateUserDto) {
-		return this.usersService.create(createUserDto);
+	async create(@Body() createUserDto: CreateUserDto): Promise<User> {
+		return await this.usersService.create(createUserDto);
 	}
 
 	@Get()
-	findAll() {
+	async findAll(): Promise<User[]> {
 		return this.usersService.findAll();
 	}
 
