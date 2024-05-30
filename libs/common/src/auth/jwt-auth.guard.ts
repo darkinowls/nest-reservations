@@ -16,7 +16,7 @@ export class JwtAuthGuard implements CanActivate {
 	}
 
 	canActivate(context: ExecutionContext): Observable<boolean> | boolean {
-		const jwt = context.switchToHttp().getRequest().cookies?.token;
+		const jwt = context.switchToHttp().getRequest().cookies?.nest_reservations_token;
 		if (!jwt) {
 			return false;
 		}
