@@ -6,7 +6,7 @@ services:
   mongo:
     image: mongo:7
     ports:
-      - "27000:27017"
+      - "27016:27017"
     volumes:
       - mongo_data:/data/db
 
@@ -16,7 +16,7 @@ services:
     build:
       dockerfile: apps/reservations/debug.Dockerfile
     ports:
-      - "27000:3000"
+      - "3000:3000"
     command: node /app/dist/apps/reservations/src/main
 
   auth:
@@ -25,8 +25,7 @@ services:
     build:
       dockerfile: apps/auth/debug.Dockerfile
     ports:
-      - "27011:3011"
-      - "27010:3010"
+      - "3010:3010"
     command: node /app/dist/apps/auth/src/main.js
 
   payments:
@@ -34,9 +33,6 @@ services:
       - .env.prod
     build:
       dockerfile: apps/payments/debug.Dockerfile
-    ports:
-      - "27020:3020"
-      - "27021:3021"
     command: node /app/dist/apps/payments/src/main.js
 
 
