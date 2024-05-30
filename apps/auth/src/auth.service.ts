@@ -33,15 +33,12 @@ export class AuthService {
 			expiresIn.getSeconds() + this.cs.getOrThrow('JWT_EXPIRE')
 		);
 
-		const domains = this.cs.getOrThrow('COOKIE_DOMAIN').split(',');
 
-
-		for (const domain of domains) {
-			response.cookie('token', token, {
-				domain: domain,
-				httpOnly: true,
-				expires: expiresIn });
-		}
+		response.cookie('nest_reservations_token', token, {
+			domain: this.cs.getOrThrow('COOKIE_DOMAIN'),
+			httpOnly: true,
+			expires: expiresIn
+		});
 	}
 
 
